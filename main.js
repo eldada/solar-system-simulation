@@ -108,7 +108,7 @@ class SolarSystem {
     
     createStarField() {
         const starGeometry = new THREE.BufferGeometry();
-        const starCount = 15000;
+        const starCount = 10000;
         
         const positions = new Float32Array(starCount * 3);
         const colors = new Float32Array(starCount * 3);
@@ -262,6 +262,10 @@ class SolarSystem {
         this.saturnRings.rotation.x = Math.PI / 2; // Rotate to be horizontal
         this.saturnRings.rotation.z = Math.PI / 6; // Tilt by 30 degrees
         this.saturnRings.position.copy(saturn.mesh.position);
+        
+        // Store original tilt values to maintain them during animation
+        this.saturnRingsOriginalTiltX = Math.PI / 2;
+        this.saturnRingsOriginalTiltZ = Math.PI / 6;
         
         // Add rings to scene
         this.scene.add(this.saturnRings);
@@ -630,6 +634,10 @@ class SolarSystem {
             this.scene.add(moonOrbitPath);
             this.orbitPaths.push(moonOrbitPath);
             
+            // Store the tilt information from the orbit path for moon positioning
+            const orbitTiltX = moonOrbitPath.rotation.x;
+            const orbitTiltZ = moonOrbitPath.rotation.z;
+            
             // Add to moons array
             this.moons.push({
                 mesh: moon,
@@ -638,7 +646,9 @@ class SolarSystem {
                 distance: distance,
                 speed: orbitalSpeed,
                 angle: Math.random() * Math.PI * 2,
-                rotationSpeed: rotationSpeed
+                rotationSpeed: rotationSpeed,
+                orbitTiltX: orbitTiltX,
+                orbitTiltZ: orbitTiltZ
             });
         });
         
@@ -776,6 +786,13 @@ class SolarSystem {
         orbitLine.computeLineDistances();
         orbitLine.visible = this.showOrbits;
         orbitLine.userData = { isMoonOrbit: true, parentPlanet: parentPlanet };
+        
+        // Add random tilt to moon orbits (10-30 degrees)
+        const tiltAngle = (Math.random() * 20 + 10) * Math.PI / 180; // Convert to radians
+        const tiltAxis = Math.random() * Math.PI * 2; // Random axis direction
+        
+        orbitLine.rotation.x = Math.sin(tiltAxis) * tiltAngle;
+        orbitLine.rotation.z = Math.cos(tiltAxis) * tiltAngle;
         
         return orbitLine;
     }
@@ -1348,7 +1365,11 @@ class SolarSystem {
             // Update Saturn's rings position
             if (planet.name === 'Saturn' && this.saturnRings) {
                 this.saturnRings.position.copy(planet.mesh.position);
-                this.saturnRings.rotation.y += 0.001 * this.speedMultiplier; // Slow ring rotation (maintains tilt)
+                
+                // Only rotate around Y axis, preserve original X and Z tilt
+                this.saturnRings.rotation.y += 0.001 * this.speedMultiplier; // Slow ring rotation
+                this.saturnRings.rotation.x = this.saturnRingsOriginalTiltX; // Maintain original X tilt
+                this.saturnRings.rotation.z = this.saturnRingsOriginalTiltZ; // Maintain original Z tilt
             }
         });
         
@@ -1357,12 +1378,29 @@ class SolarSystem {
             // Moon orbital motion around parent planet
             moon.angle += moon.speed * this.speedMultiplier;
             
-            // Calculate moon position relative to its parent planet
+            // Calculate moon position in tilted orbit relative to its parent planet
             const parentPos = moon.parentPlanet.mesh.position;
-            const moonX = parentPos.x + Math.cos(moon.angle) * moon.distance;
-            const moonZ = parentPos.z + Math.sin(moon.angle) * moon.distance;
             
-            moon.mesh.position.set(moonX, parentPos.y, moonZ);
+            // Base circular motion
+            const baseX = Math.cos(moon.angle) * moon.distance;
+            const baseY = 0;
+            const baseZ = Math.sin(moon.angle) * moon.distance;
+            
+            // Apply tilt transformations
+            // Rotate around X axis
+            const tempY1 = baseY * Math.cos(moon.orbitTiltX) - baseZ * Math.sin(moon.orbitTiltX);
+            const tempZ1 = baseY * Math.sin(moon.orbitTiltX) + baseZ * Math.cos(moon.orbitTiltX);
+            
+            // Rotate around Z axis
+            const finalX = baseX * Math.cos(moon.orbitTiltZ) - tempY1 * Math.sin(moon.orbitTiltZ);
+            const finalY = baseX * Math.sin(moon.orbitTiltZ) + tempY1 * Math.cos(moon.orbitTiltZ);
+            const finalZ = tempZ1;
+            
+            moon.mesh.position.set(
+                parentPos.x + finalX,
+                parentPos.y + finalY,
+                parentPos.z + finalZ
+            );
             
             // Moon rotation
             moon.mesh.rotation.y += moon.rotationSpeed * this.speedMultiplier;

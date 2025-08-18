@@ -1,10 +1,10 @@
 # Interactive Solar System Simulation
 
-An educational 3D solar system simulation built with Three.js for school children to explore and learn about our solar system.
+An educational 3D solar system simulation built with [Three.js](https://threejs.org/) for school children to explore and learn about our solar system.
 
 ## Features
 
-- **Complete Solar System**: 8 planets, 6 major moons, Saturn's rings, and 15,000 stars
+- **Complete Solar System**: 8 planets, 6 major moons, Saturn's rings, and thousands of stars in the background
 - **Realistic Visuals**: Procedural textures, proper lighting, and authentic materials
 - **Interactive Controls**: Planet focusing, speed control (0-9), orbital path toggle
 - **Mobile Support**: Touch controls for tablets and smartphones
@@ -40,10 +40,10 @@ npx serve .
 ### Option 3: Docker Container
 ```bash
 # Build the container
-docker build -f Docker/Dockerfile -t solar-system-sim .
+docker build -f Docker/Dockerfile -t solar-system-sim:local .
 
 # Run the container
-docker run -p 8080:80 solar-system-sim
+docker run --rm -p 8080:80 solar-system-sim:local
 
 # Visit: http://localhost:8080
 ```
@@ -52,14 +52,8 @@ docker run -p 8080:80 solar-system-sim
 - Modern browser with WebGL support (Chrome, Firefox, Safari, Edge)
 - Works on desktop, tablet, and mobile devices
 
-## Project Structure
-- `index.html` - Main application
-- `style.css` - Responsive styling  
-- `main.js` - Three.js simulation
-- `favicon.svg` - Saturn icon
-- `Docker/` - Container setup
-  - `Dockerfile` - Container configuration
-  - `.dockerignore` - Build optimization
 
 ## Credits
-Built with Three.js, WebGL, and HTML5 Canvas
+Built with Three.js, WebGL, and HTML5 Canvas.
+
+I also used [Cursor IDE](https://cursor.com/) (The AI Code Editor) to generate most of the code here as part of an experimental project.
