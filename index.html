@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Solar System Simulation</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="info">
+        <div id="info-content">
+            <h1>Interactive Solar System</h1>
+            <div id="planet-info">
+                <p><strong>Planets:</strong> Mercury(M), Venus(V), Earth(E), Mars(R), Jupiter(J), Saturn(S), Uranus(U), Neptune(N)</p>
+                <p><strong>Moons:</strong> Earth's Moon, Jupiter's 4 Galilean moons, Saturn's Titan</p>
+                <p><strong>Features:</strong> Realistic textures, Saturn's rings, 15,000 colored stars, persistent settings</p>
+            </div>
+            <div id="controls">
+                <p><strong>Controls:</strong></p>
+                <div class="desktop-controls">
+                    <p>Arrow Keys: Move view | Q: Move forward | A: Move backward</p>
+                    <p>Mouse: Look around | Scroll: Zoom in/out</p>
+                    <p><strong>P:</strong> Toggle orbital paths</p>
+                    <p><strong>0-9:</strong> Speed control (0=stop, 9=full speed)</p>
+                    <p><strong>Planet Focus:</strong> M, V, E, R, J, S, U, N</p>
+                    <p><strong>ESC:</strong> Release planet focus</p>
+                </div>
+                <div class="mobile-controls">
+                    <p><strong>Touch:</strong> Drag to look around</p>
+                    <p><strong>Pinch:</strong> Zoom in/out</p>
+                    <p><strong>Speed:</strong> Use keyboard 0-9 keys</p>
+                    <p>Use buttons below for orbital paths and planet focus</p>
+                </div>
+            </div>
+        </div>
+        <div id="info-toggle">
+            <span id="info-icon">ℹ️</span>
+        </div>
+        <div id="loading">Loading...</div>
+    </div>
+    
+    <div id="mobile-ui">
+        <div id="mobile-controls">
+            <div id="mobile-toggle">
+                <span id="mobile-toggle-icon">▲</span>
+            </div>
+            
+            <div id="mobile-content">
+                <div class="control-row">
+                    <button class="toggle-btn" id="orbit-toggle" data-action="toggleOrbits">
+                        <span class="toggle-icon">🛸</span>
+                        <span class="toggle-label">Paths</span>
+                    </button>
+                    
+                    <button class="toggle-btn" data-action="releaseFocus">
+                        <span class="toggle-icon">📷</span>
+                        <span class="toggle-label">Free Cam</span>
+                    </button>
+                </div>
+                
+                <div class="planet-selector">
+                    <div class="planet-grid">
+                        <button class="planet-btn" data-planet="Mercury">Mercury</button>
+                        <button class="planet-btn" data-planet="Venus">Venus</button>
+                        <button class="planet-btn" data-planet="Earth">Earth</button>
+                        <button class="planet-btn" data-planet="Mars">Mars</button>
+                        <button class="planet-btn" data-planet="Jupiter">Jupiter</button>
+                        <button class="planet-btn" data-planet="Saturn">Saturn</button>
+                        <button class="planet-btn" data-planet="Uranus">Uranus</button>
+                        <button class="planet-btn" data-planet="Neptune">Neptune</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="container"></div>
+
+    <!-- Three.js from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

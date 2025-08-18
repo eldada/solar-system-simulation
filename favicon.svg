@@ -1,0 +1,17 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <!-- Saturn's rings (back) - tilted 30 degrees -->
+  <ellipse cx="16" cy="16" rx="14" ry="4" fill="none" stroke="#D4AF37" stroke-width="1.5" opacity="0.7" transform="rotate(30 16 16)"/>
+  <ellipse cx="16" cy="16" rx="12" ry="3" fill="none" stroke="#E6C547" stroke-width="1" opacity="0.5" transform="rotate(30 16 16)"/>
+  
+  <!-- Saturn planet -->
+  <circle cx="16" cy="16" r="7" fill="#FAD5A5"/>
+  
+  <!-- Saturn's bands -->
+  <ellipse cx="16" cy="14.5" rx="6.5" ry="1" fill="#F4C430" opacity="0.6"/>
+  <ellipse cx="16" cy="16" rx="6.5" ry="0.8" fill="#DEB887" opacity="0.4"/>
+  <ellipse cx="16" cy="17.5" rx="6.5" ry="1" fill="#D2B48C" opacity="0.6"/>
+  
+  <!-- Saturn's rings (front) - tilted 30 degrees -->
+  <ellipse cx="16" cy="16" rx="14" ry="4" fill="none" stroke="#D4AF37" stroke-width="1.5" opacity="0.9" transform="rotate(30 16 16)" style="clip-path: polygon(0% 0%, 100% 0%, 100% 50%, 0% 50%)"/>
+  <ellipse cx="16" cy="16" rx="12" ry="3" fill="none" stroke="#E6C547" stroke-width="1" opacity="0.7" transform="rotate(30 16 16)" style="clip-path: polygon(0% 0%, 100% 0%, 100% 50%, 0% 50%)"/>
+</svg>

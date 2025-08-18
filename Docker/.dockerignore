@@ -1,0 +1,20 @@
+# Git files
+.git
+.gitignore
+
+# Documentation
+README.md
+
+# Docker files
+Docker/
+
+# IDE files
+.vscode
+.idea
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
