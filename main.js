@@ -21,6 +21,9 @@ class SolarSystem {
         this.focusedPlanet = null;
         this.cameraFollowDistance = 8;
         
+        // Planet facts panel
+        this.factsPanel = null;
+        
         // Mobile touch controls
         this.isMobile = this.detectMobile();
         this.touchState = {
@@ -50,6 +53,7 @@ class SolarSystem {
         this.setupEventListeners();
         this.setupMobileControls();
         this.setupMobileButtons();
+        this.initializePlanetFactsPanel();
         this.animate();
     }
     
@@ -206,6 +210,74 @@ class SolarSystem {
             ['Uranus', 1.6, 0x4fd0e7, 130, 0.00196, 0.003675],
             ['Neptune', 1.55, 0x4b70dd, 160, 0.00147, 0.00343]
         ];
+        
+        // Planet facts data for the information panel
+        this.planetFacts = {
+            'Mercury': {
+                diameter: '4,879 km',
+                sizeRatio: '0.38× Earth',
+                distanceFromSun: '57.9 million km',
+                dayLength: '58.6 Earth days',
+                yearLength: '88 Earth days',
+                moons: '0'
+            },
+            'Venus': {
+                diameter: '12,104 km',
+                sizeRatio: '0.95× Earth',
+                distanceFromSun: '108.2 million km',
+                dayLength: '243 Earth days',
+                yearLength: '225 Earth days',
+                moons: '0'
+            },
+            'Earth': {
+                diameter: '12,756 km',
+                sizeRatio: '1.00× Earth',
+                distanceFromSun: '149.6 million km',
+                dayLength: '24 hours',
+                yearLength: '365.25 days',
+                moons: '1 (Moon)'
+            },
+            'Mars': {
+                diameter: '6,792 km',
+                sizeRatio: '0.53× Earth',
+                distanceFromSun: '227.9 million km',
+                dayLength: '24.6 hours',
+                yearLength: '687 Earth days',
+                moons: '2 (Phobos, Deimos)'
+            },
+            'Jupiter': {
+                diameter: '142,984 km',
+                sizeRatio: '11.21× Earth',
+                distanceFromSun: '778.5 million km',
+                dayLength: '9.9 hours',
+                yearLength: '11.9 Earth years',
+                moons: '95+ (4 major Galilean moons)'
+            },
+            'Saturn': {
+                diameter: '120,536 km',
+                sizeRatio: '9.45× Earth',
+                distanceFromSun: '1.43 billion km',
+                dayLength: '10.7 hours',
+                yearLength: '29.4 Earth years',
+                moons: '146+ (Titan is largest)'
+            },
+            'Uranus': {
+                diameter: '51,118 km',
+                sizeRatio: '4.01× Earth',
+                distanceFromSun: '2.87 billion km',
+                dayLength: '17.2 hours',
+                yearLength: '84 Earth years',
+                moons: '27'
+            },
+            'Neptune': {
+                diameter: '49,528 km',
+                sizeRatio: '3.88× Earth',
+                distanceFromSun: '4.50 billion km',
+                dayLength: '16.1 hours',
+                yearLength: '165 Earth years',
+                moons: '16 (Triton is largest)'
+            }
+        };
         
         planetData.forEach((data, index) => {
             const [name, radius, baseColor, distance, orbitalSpeed, rotationSpeed] = data;
@@ -1073,6 +1145,67 @@ class SolarSystem {
         this.updateMobileUI();
     }
     
+    initializePlanetFactsPanel() {
+        // Get reference to facts panel
+        this.factsPanel = document.getElementById('planet-facts-panel');
+        
+        // Setup close button event listener
+        const closeBtn = document.getElementById('planet-facts-close');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                this.hidePlanetFacts();
+                this.releasePlanetFocus();
+            });
+        }
+        
+        console.log('Planet facts panel initialized');
+    }
+    
+    showPlanetFacts(planetName) {
+        if (!this.factsPanel || !this.planetFacts[planetName]) return;
+        
+        const facts = this.planetFacts[planetName];
+        
+        // Update panel title
+        const title = document.getElementById('planet-facts-title');
+        if (title) {
+            title.textContent = `${planetName} Facts`;
+        }
+        
+        // Update all fact values
+        const diameterEl = document.getElementById('planet-diameter');
+        if (diameterEl) diameterEl.textContent = facts.diameter;
+        
+        const sizeRatioEl = document.getElementById('planet-size-ratio');
+        if (sizeRatioEl) sizeRatioEl.textContent = facts.sizeRatio;
+        
+        const distanceEl = document.getElementById('planet-distance');
+        if (distanceEl) distanceEl.textContent = facts.distanceFromSun;
+        
+        const dayEl = document.getElementById('planet-day');
+        if (dayEl) dayEl.textContent = facts.dayLength;
+        
+        const yearEl = document.getElementById('planet-year');
+        if (yearEl) yearEl.textContent = facts.yearLength;
+        
+        const moonsEl = document.getElementById('planet-moons');
+        if (moonsEl) moonsEl.textContent = facts.moons;
+        
+        // Show the panel
+        this.factsPanel.classList.remove('planet-facts-hidden');
+        
+        console.log(`Showing facts for ${planetName}`);
+    }
+    
+    hidePlanetFacts() {
+        if (!this.factsPanel) return;
+        
+        // Hide the panel
+        this.factsPanel.classList.add('planet-facts-hidden');
+        
+        console.log('Planet facts panel hidden');
+    }
+    
     setupInfoToggle() {
         const infoPanel = document.getElementById('info');
         
@@ -1208,6 +1341,10 @@ class SolarSystem {
         if (planet) {
             this.focusedPlanet = planet;
             this.controls.enabled = false; // Disable orbit controls when following
+            
+            // Show planet facts panel
+            this.showPlanetFacts(planetName);
+            
             if (save) {
                 this.saveSettings();
             }
@@ -1226,6 +1363,10 @@ class SolarSystem {
             console.log(`Released focus from ${this.focusedPlanet.name}`);
             this.focusedPlanet = null;
             this.controls.enabled = true; // Re-enable orbit controls
+            
+            // Hide planet facts panel
+            this.hidePlanetFacts();
+            
             this.saveSettings();
             
             // Update mobile UI if available
