@@ -8,29 +8,33 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Desktop speed indicator (appears briefly when speed changes via keyboard) -->
+    <div id="desktop-speed-indicator" class="desktop-speed-indicator hidden">
+        <span id="desktop-speed-label">Speed: 3</span>
+    </div>
+    
     <div id="info">
         <div id="info-content">
             <h1>Interactive Solar System</h1>
             <div id="planet-info">
                 <p><strong>Planets:</strong> Mercury(M), Venus(V), Earth(E), Mars(R), Jupiter(J), Saturn(S), Uranus(U), Neptune(N)</p>
-                <p><strong>Moons:</strong> Earth's Moon, Jupiter's 4 Galilean moons, Saturn's Titan</p>
-                <p><strong>Features:</strong> Realistic textures, Saturn's rings, thousands of colored stars, persistent settings</p>
+                <p><strong>Moons:</strong> 21 moons across Earth, Mars, Jupiter, Saturn, Uranus, Neptune</p>
+                <p><strong>Features:</strong> NASA textures, asteroid belt, rings, cloud layers, guided tour</p>
             </div>
             <div id="controls">
                 <p><strong>Controls:</strong></p>
                 <div class="desktop-controls">
-                    <p>Arrow Keys: Move view | Q: Move forward | A: Move backward</p>
+                    <p>Arrow Keys: Move view | Q: Forward | A: Backward</p>
                     <p>Mouse: Look around | Scroll: Zoom in/out</p>
-                    <p><strong>P:</strong> Toggle orbital paths</p>
+                    <p><strong>P:</strong> Toggle orbital paths | <strong>T:</strong> Tour mode | <strong>←/→:</strong> Tour prev/next</p>
                     <p><strong>0-9:</strong> Speed control (0=stop, 9=full speed)</p>
-                    <p><strong>Planet Focus:</strong> M, V, E, R, J, S, U, N</p>
-                    <p><strong>ESC:</strong> Release planet focus</p>
+                    <p><strong>Focus:</strong> M, V, E, R, J, S, U, N | <strong>ESC:</strong> Release</p>
+                    <p><strong>Click</strong> a planet to see NASA images!</p>
                 </div>
                 <div class="mobile-controls">
-                    <p><strong>Touch:</strong> Drag to look around</p>
-                    <p><strong>Pinch:</strong> Zoom in/out</p>
-                    <p><strong>Speed:</strong> Use keyboard 0-9 keys</p>
-                    <p>Use buttons below for orbital paths and planet focus</p>
+                    <p><strong>Touch:</strong> Drag to look | <strong>Pinch:</strong> Zoom</p>
+                    <p><strong>Double-tap:</strong> Focus planet | <strong>Swipe:</strong> Next/prev planet</p>
+                    <p><strong>Tap planet</strong> for NASA images! Use controls below.</p>
                 </div>
             </div>
         </div>
@@ -53,10 +57,20 @@
                         <span class="toggle-label">Paths</span>
                     </button>
                     
+                    <button class="toggle-btn" id="tour-toggle" data-action="toggleTour">
+                        <span class="toggle-icon">🚀</span>
+                        <span class="toggle-label">Tour</span>
+                    </button>
+                    
                     <button class="toggle-btn" data-action="releaseFocus">
                         <span class="toggle-icon">📷</span>
-                        <span class="toggle-label">Free Cam</span>
+                        <span class="toggle-label">Free</span>
                     </button>
+                </div>
+                
+                <div class="speed-control">
+                    <label for="speed-slider" class="speed-label">Speed: <span id="speed-value">100%</span></label>
+                    <input type="range" id="speed-slider" min="0" max="9" value="9" class="speed-slider">
                 </div>
                 
                 <div class="planet-selector">
@@ -70,16 +84,33 @@
                         <button class="planet-btn" data-planet="Uranus">Uranus</button>
                         <button class="planet-btn" data-planet="Neptune">Neptune</button>
                     </div>
+                    <p class="swipe-hint">Swipe left/right to change planets when focused</p>
                 </div>
             </div>
         </div>
     </div>
     
+    <!-- Tour Navigation Overlay -->
+    <div id="tour-nav" class="tour-nav hidden">
+        <button id="tour-prev" class="tour-nav-btn" title="Previous planet (Left arrow)">&#9664; Prev</button>
+        <div class="tour-nav-center">
+            <div class="tour-planet-name" id="tour-planet-name">Mercury</div>
+            <div class="tour-dots" id="tour-dots"></div>
+            <div class="tour-progress-bar">
+                <div class="tour-progress-fill" id="tour-progress-fill"></div>
+            </div>
+        </div>
+        <button id="tour-next" class="tour-nav-btn" title="Next planet (Right arrow)">Next &#9654;</button>
+    </div>
+
     <!-- Planet Facts Panel -->
     <div id="planet-facts-panel" class="planet-facts-hidden">
         <div class="planet-facts-header">
             <h2 id="planet-facts-title">Planet Facts</h2>
             <button id="planet-facts-close" class="facts-close-btn">×</button>
+        </div>
+        <div class="planet-facts-description">
+            <p id="planet-description"></p>
         </div>
         <div class="planet-facts-content">
             <div class="fact-item">
@@ -105,6 +136,34 @@
             <div class="fact-item">
                 <span class="fact-label">Moons:</span>
                 <span class="fact-value" id="planet-moons">-</span>
+            </div>
+        </div>
+        <div class="planet-facts-hint">
+            <p>Click on a planet to see NASA images</p>
+        </div>
+    </div>
+    
+    <!-- Image Gallery Modal -->
+    <div id="image-gallery-modal" class="hidden">
+        <div class="gallery-backdrop"></div>
+        <div class="gallery-content">
+            <div class="gallery-header">
+                <h2 id="gallery-title">Planet Images</h2>
+                <button id="gallery-close" class="gallery-close-btn">×</button>
+            </div>
+            <div class="gallery-main">
+                <button id="gallery-prev" class="gallery-nav gallery-prev">‹</button>
+                <div class="gallery-image-container">
+                    <img id="gallery-image" src="" alt="Planet image" />
+                </div>
+                <button id="gallery-next" class="gallery-nav gallery-next">›</button>
+            </div>
+            <div class="gallery-footer">
+                <p id="gallery-caption" class="gallery-caption">Image caption</p>
+                <div class="gallery-info">
+                    <span id="gallery-counter">1 / 2</span>
+                    <a id="gallery-source" href="#" target="_blank" rel="noopener noreferrer" class="gallery-source-link">View Source</a>
+                </div>
             </div>
         </div>
     </div>
