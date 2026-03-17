@@ -14,23 +14,23 @@ class SolarSystem {
         this.textureLoader = null;
         this.asteroidBelt = null;
         
-        // Texture URLs from Solar System Scope (CC BY 4.0) and NASA
+        // Texture files from Solar System Scope (CC BY 4.0): https://www.solarsystemscope.com/textures/
+        // Earth textures are 8K resolution; all others are 2K.
         this.textureURLs = {
-            sun: 'https://www.solarsystemscope.com/textures/download/2k_sun.jpg',
-            mercury: 'https://www.solarsystemscope.com/textures/download/2k_mercury.jpg',
-            venus: 'https://www.solarsystemscope.com/textures/download/2k_venus_surface.jpg',
-            venusAtmosphere: 'https://www.solarsystemscope.com/textures/download/2k_venus_atmosphere.jpg',
-            earth: 'https://www.solarsystemscope.com/textures/download/2k_earth_daymap.jpg',
-            earthClouds: 'https://www.solarsystemscope.com/textures/download/2k_earth_clouds.jpg',
-            earthSpecular: 'https://www.solarsystemscope.com/textures/download/2k_earth_specular_map.jpg',
-            mars: 'https://www.solarsystemscope.com/textures/download/2k_mars.jpg',
-            jupiter: 'https://www.solarsystemscope.com/textures/download/2k_jupiter.jpg',
-            saturn: 'https://www.solarsystemscope.com/textures/download/2k_saturn.jpg',
-            saturnRing: 'https://www.solarsystemscope.com/textures/download/2k_saturn_ring_alpha.png',
-            uranus: 'https://www.solarsystemscope.com/textures/download/2k_uranus.jpg',
-            neptune: 'https://www.solarsystemscope.com/textures/download/2k_neptune.jpg',
-            moon: 'https://www.solarsystemscope.com/textures/download/2k_moon.jpg',
-            // Moon textures - using procedural for moons without good public textures
+            sun: 'textures/2k_sun.jpg',
+            mercury: 'textures/2k_mercury.jpg',
+            venus: 'textures/2k_venus_surface.jpg',
+            venusAtmosphere: 'textures/2k_venus_atmosphere.jpg',
+            earth: 'textures/8k_earth_daymap.jpg',
+            earthClouds: 'textures/8k_earth_clouds.jpg',
+            earthNight: 'textures/8k_earth_nightmap.jpg',
+            mars: 'textures/2k_mars.jpg',
+            jupiter: 'textures/2k_jupiter.jpg',
+            saturn: 'textures/2k_saturn.jpg',
+            saturnRing: 'textures/2k_saturn_ring_alpha.png',
+            uranus: 'textures/2k_uranus.jpg',
+            neptune: 'textures/2k_neptune.jpg',
+            moon: 'textures/2k_moon.jpg',
         };
         
         // Loaded textures cache
@@ -819,9 +819,11 @@ class SolarSystem {
                         roughness: 0.5,
                         metalness: 0.1
                     });
-                    // Add specular map for oceans if available
-                    if (this.textures.earthSpecular) {
-                        earthMaterial.roughnessMap = this.textures.earthSpecular;
+                    // Add night lights (city lights on the dark side of Earth)
+                    if (this.textures.earthNight) {
+                        earthMaterial.emissiveMap = this.textures.earthNight;
+                        earthMaterial.emissive = new THREE.Color(0xffaa44);
+                        earthMaterial.emissiveIntensity = 0.6;
                     }
                     return earthMaterial;
                 }
